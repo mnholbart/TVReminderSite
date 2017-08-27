@@ -11,21 +11,17 @@ from pyramid.request import Response
 
 from ..models import User, UserShows
 
-@view_config(route_name='home', renderer='../templates/mytemplate.jinja2')
+@view_config(route_name='home', renderer='../templates/home.jinja2')
 def home(request):
-    next_url = request.route_url('login')
-    return HTTPFound(location=next_url)
+    return {'':''}
 
-@view_config(route_name='view_show')
+@view_config(route_name='view_show', renderer='../templates/show.jinja2')
 def view_show(request):
-    return { 'a' }
+    return { 'a' : '' }
 
 @view_config(route_name='watchlist', renderer='../templates/watchlist.jinja2')
 def watchlist(request):
     user = request.user
     if user is None:
         return HTTPFound(location=request.route_url('login'))
-
-
-
-    return { 'hi ' : request.user.name }
+    return {'':''}

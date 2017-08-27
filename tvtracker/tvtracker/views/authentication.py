@@ -33,3 +33,12 @@ def login(request):
         login=login,
         password=''
     )
+
+@view_config(route_name='logout')
+def logout(request):
+    print (request.referer)
+    user = request.user
+    if user is None:
+        return HTTPFound(location=request.route_url('home'))
+    headers = forget(request)
+    return HTTPFound(location=request.route_url('home'), headers=headers)

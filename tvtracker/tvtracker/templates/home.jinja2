@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+</head>
+<body>
+    <div class="content">
+    {% if request.user is none %}
+        <p class="pull-right">
+            <a href="{{ request.route_url('login') }}">Login</a>
+        </p>
+    {% else %}
+        <p class="pull-right">
+            Logged in as: "{{request.user.name}}" <a href="{{request.route_url('logout')}}">Logout</a>
+        </p>
+        <p class="pull-right">
+            <a href="{{request.route_url('watchlist')}}">View Watchlist</a>
+        </p>
+    {% endif %}
+    {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
