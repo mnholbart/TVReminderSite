@@ -2,10 +2,18 @@
 <html lang="en">
 <head>
     <title>Watchlist</title>
+    <a href="{{request.route_url('home')}}">Home</a>
 </head>
 <body>
     <div class="content">
-        Shows go here
+    Watchlist:
+        <ul>
+            {% for show in watchedshows %}
+                <li>{{show.name}}
+                    <form style="display:inline" method="post"><input type="submit" name="shows.watchlist.remove.{{show.name}}" value="Remove from Watchlist"/></form>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
 </body>
 </html>

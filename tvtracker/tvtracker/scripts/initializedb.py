@@ -48,12 +48,4 @@ def main(argv=sys.argv):
         otherTest.set_password('testpw')
         dbsession.add(otherTest)
 
-        for x in range(50):
-            testShow = UserShows(name="ShowName" + str(x), showId=(47+x), user=testUser)
-            dbsession.add(testShow)
-
-        for x in range(10):
-            testShow = UserShows(name="OtherRandomShowName" + str(x), showId=(153 + x), user=otherTest)
-            dbsession.add(testShow)
-
 

@@ -17,6 +17,27 @@
             <a href="{{request.route_url('watchlist')}}">View Watchlist</a>
         </p>
     {% endif %}
+    <form method="get">
+        <input type="text" name="form.search" value="{{search}}" placeholder="Show Name">
+        <input type="submit" name="form.submitted" value="Search"/>
+    </form>
+    {% if shows is not none %}
+        <ul>
+        {% for show in shows %}
+            <li>{{show}}
+                <form style="display:inline" method="post"><input type="submit" name="shows.submitted.{{show.name}}" value="View"/></form>
+                {% if request.user is not none %}
+                    {% if show not in userwatchlist %}
+                        <form style="display:inline" method="post"><input type="submit" name="shows.watchlist.add.{{show.name}}" value="Add to Watchlist"/></form>
+                    {% else %}
+                        <form style="display:inline" method="post"><input type="submit" name="shows.watchlist.remove.{{show.name}}" value="Remove from Watchlist"/></form>
+                    {% endif %}
+                {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
     {% block content %}{% endblock %}
     </div>
 </body>
