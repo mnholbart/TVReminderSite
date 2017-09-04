@@ -6,11 +6,23 @@
 </head>
 <body>
     <div class="content">
-    Watchlist:
+    <br />
+    Running Shows
         <ul>
-            {% for show in watchedshows %}
-                <li>{{show.name}}
-                    <form style="display:inline" method="post"><input type="submit" name="shows.watchlist.remove.{{show.name}}" value="Remove from Watchlist"/></form>
+            {% for show in watchedshows if show.running %}
+                <li>
+                    <b><a href="{{request.route_url('view_show', show_id=show.showId)}}">{{show.name}}</a></b>
+                    <form style="display:inline" method="post"><input type="submit" name="shows.watchlist.remove.{{show.name}}" value="Stop Watching"/></form> <br />
+                    {% if show.time is not none %} <b>{% if show.nextepisode == 1 %}SEASON PREMIER: {% else %}Episode {{show.nextepisode}}: {% endif %}</b>Date: {{show.time}} {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    Other Shows
+        <ul>
+            {% for show in watchedshows if not show.running %}
+                <li>
+                    <b><a href="{{request.route_url('view_show', show_id=show.showId)}}">{{show.name}}</a></b>
+                    <form style="display:inline" method="post"><input type="submit" name="shows.watchlist.remove.{{show.name}}" value="Stop Watching"/></form> <br />
                 </li>
             {% endfor %}
         </ul>

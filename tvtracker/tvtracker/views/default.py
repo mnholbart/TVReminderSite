@@ -9,6 +9,9 @@ from pyramid.httpexceptions import (
 from pyramid.view import view_config
 from pyramid.request import Response
 
+from pprint import pprint
+from datetime import datetime
+
 from tvmaze.api import Api
 
 from ..models import User, UserShows
@@ -68,12 +71,38 @@ def watchlist(request):
 
     queryshows = request.dbsession.query(UserShows).filter_by(user=request.user).all()
 
+    removeshow = None
     for show in queryshows:
-        if request.user is not None and 'shows.watchlist.remove.' + show.name in request.POST:
+        time = None
+        nextepisode = None
+        running = False
+        episodedata = api.show.get(show.showId)
+        #print (vars(episodedata))
+        if 'nextepisode' in episodedata._links:
+            episodeurl = episodedata._links['nextepisode']['href']
+            episodedata = api.episode.get(episodeurl.rsplit('/', 1)[1])
+
+            time = datetime.strptime(episodedata.airdate + ' ' + episodedata.airtime, '%Y-%m-%d %H:%M')
+            nextepisode = episodedata.number
+            running = True
+
+        #Update show var with new info
+        show.time = time
+        show.nextepisode = nextepisode
+        show.running = running
+
+        if 'shows.watchlist.remove.' + show.name in request.POST:
             #usershow = request.dbsession.query(UserShows).filter_by(user=request.user, showId=show.id).first()
             request.dbsession.delete(show)
-            queryshows.remove(show)
+            removeshow = show
+            #queryshows.remove(show)
+
+    if removeshow is not None:
+        queryshows.remove(removeshow)
+
+    #sort shows to be listed
+    sortedshows = sorted(queryshows, key=lambda r: r.time if (r and hasattr(r, 'time') and r.time) else datetime.max)
 
     return dict(
-        watchedshows=queryshows,
+        watchedshows=sortedshows,
     )
